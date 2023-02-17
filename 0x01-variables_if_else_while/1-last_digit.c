@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
 /**
  * main - to print the last digit of the number stored in the variable n.
  * Return 0
