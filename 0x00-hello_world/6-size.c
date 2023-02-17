@@ -4,7 +4,7 @@
  * this means it prints the size of various computer type
  * Return: 0
  */
-int main()
+int main(void)
 {
 char a;
 int b;
