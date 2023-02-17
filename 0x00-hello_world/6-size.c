@@ -1,8 +1,8 @@
 #include <stdio.h>
 /**
- * main - A program on size is not grandeur, and territory does not make a nation
+ * main- A program on size is not grandeur, and territory does not make a nation
  * this means it prints the size of various computer type
- * Return 0
+ * Return: 0
  */
 int main(void)
 	char a;
@@ -10,10 +10,10 @@ int main(void)
 	long int c;
 	long long int d;
 	float f;
-printf("Size of a char: %lu bytes\n", (unsigned long) sizeof(a));
-printf("Size of a int: ");
-printf("Size of a long int: ");
-printf("SIze of a long long int: ");
-printf("Size of a float: ");
+printf("Size of a char: %lu byte(s)\n", (unsigned long)sizeof(a));
+printf("Size of a int: %lu byte(s)\n", (unsigned long)sizeof(b));
+printf("Size of a long int: %lu byte(s)\n", (unsigned long)sizeof(c));
+printf("Size of a long long int: %lu byte(s)\n", (unsigned long)sizeof(d));
+printf("Size of a float: %lu byte(s)\n", (unsigned long)sizeof(f));
 return (0);
 }
