@@ -1,7 +1,7 @@
 #include <stdio.h>
 /**
- * main - A program to print with the use printf function
- * Return: 0
+ *main - A program to print with the use printf function
+ *Return: 0
  */
 int main(void)
 {
