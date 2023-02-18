@@ -2,7 +2,7 @@
 #include <time.h>
 #include <stdlib.h>
 /**
- * main- print all numbers of base 16 in lowercase
+ * main- prints the lowercase alphabets in reverse
  * Return: 0
  */
 int main(void)
