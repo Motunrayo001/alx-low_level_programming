@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 /**
- * main - a program that prints the alphabet in lowercase, followed by a new line.
+ * main - a program that prints the alphabet in lowercase.
  * Return: 0
  */
 int main(void)
@@ -15,4 +15,4 @@ int main(void)
         }
         putchar('\n');
         return (0);
-}	
+}
