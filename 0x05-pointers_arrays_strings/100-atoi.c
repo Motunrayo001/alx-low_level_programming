@@ -13,36 +13,30 @@
  */
 int _atoi(char *s)
 {
-	int i;
-	int h;
-	int p;
+	int a = 0;
+	unsigned int b = 0;
+	int c = 1;
+	int d = 0;
 
-	h = 0;
-	p = -1;
-	for (i = 0; s[i] != '\0'; i++)
+	while (s[a])
 	{
-		if (s[i] == '_')
+		if (s[a] == 45)
 		{
-			p *= 1;
+			c *= -1;
 		}
-		if (s[i] > 47 && s[i] < 58)
+		while (s[a] >= 48 && s[a] <= 57)
 		{
-			if (h < 0)
-			{
-				h = (h * 10) - (s[i] - '0');
-			}
-			else
-			{
-				h = (s[i] - '0') * -1;
-			}
-			if (s[i + 1] < 48 || s[i + 1] > 57)
-				break;
+			d = 1;
+			b = (b * 10) + (s[a] - '0');
+			a++;
 		}
+		if (d == 1)
+		{
+			break;
+		}
+		a++;
 	}
-	if (p < 0)
-	{
-		h *= -1;
-	}
-	return (h);
+	b *= c;
+	return (b);
 }
 
