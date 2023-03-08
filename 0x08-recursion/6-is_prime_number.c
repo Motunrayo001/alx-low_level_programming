@@ -19,26 +19,28 @@ int is_prime_number(int n)
 	{
 		return (1);
 	}
-	return (evaluate_n(n, i));
+	return (rec_n(n, i));
 }
 
 /**
- * evaluate_n - recursion loop
+ * rec_n - recursion loop
  * @n: number
  * @i: iterator
  * Return: 1 or 0
  */
-int evaluate_n(int n, int i)
+int rec_n(int n, int i)
 {
 	if (i == n - 1)
 	{
 		return (1);
 	}
-	else if (n % i == 0)
+	if (n % i == 0)
 	{
 		return (0);
 	}
 	if (n % i != 0)
 	{
-		return (evaluate_n(n, i + 1);
-				}
+		return (rec_n(n, i + 1));
+	}
+	return (0);
+}
