@@ -41,7 +41,7 @@ char *_strcpy(char *dest, char *src)
  * @age: age to be initialised
  * @owner: owner to be initialised
  * You have to store a copy of name and owner
- * Return NULL if the function fails
+ * Return: NULL if the function fails
  */
 dog_t *new_dog(char *name, float age, char *owner)
 {
@@ -56,7 +56,7 @@ dog_t *new_dog(char *name, float age, char *owner)
 	if (doggo->name == NULL)
 	{
 		free(doggo);
-		 return (NULL);
+		return (NULL);
 	}
 	doggo->owner = malloc(sizeof(char) * (_strlen(owner) + 1));
 	if (doggo->owner == NULL)
