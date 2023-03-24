@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 /**
- * print_strings - function that prints anything
+ * print_strings - function that prints strings
  * @separator: the string to be printed between the strings
  * @n: the string to be printed between the strings
  * Return: nothing
