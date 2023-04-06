@@ -1,5 +1,6 @@
 #include "lists.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 /**
  * _r - realocates the memory of array of pointers
@@ -13,15 +14,15 @@ listint_t **_r(listint_t **l, size_t s, listint_t *n)
 	listint_t **n2;
 	size_t a;
 
-	n2 = malloc(size * sizeof(listint_t *));
+	n2 = malloc(s * sizeof(listint_t *));
 	if (n2 == NULL)
 	{
 		free(l);
 		exit(98);
 	}
 	for (a = 0; a < s - 1; a++)
-		n2[a] = l[1];
-	n2[i] = n;
+		n2[a] = l[a];
+	n2[a] = n;
 	free(l);
 	return (n2);
 }
@@ -43,7 +44,7 @@ size_t free_listint_safe(listint_t **head)
 	{
 		for (a = 0; a < n; a++)
 		{
-			if (*head == l[i])
+			if (*head == l[a])
 			{
 				*head = NULL;
 				free(l);
