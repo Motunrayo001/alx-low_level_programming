@@ -1,4 +1,5 @@
 #include "lists.h"
+#include <stdio.h>
 
 /**
  * print_listint_safe -  prints a listint_t linked list
@@ -45,7 +46,7 @@ const listint_t **_rel(const listint_t **l, size_t size, const listint_t *new)
 	const listint_t **newl;
 	size_t a;
 
-	newl = malloc(size * sizeof(listint_t *head));
+	newl = malloc(size * sizeof(listint_t *));
 	if (newl == NULL)
 	{
 		free(l);
