@@ -52,9 +52,9 @@ int main(int argc, char *argv[])
 		}
 		rd = read(from, b, 1024);
 		to = open(argv[2], O_WRONLY | O_APPEND);
-	} for (; r > 0; ) {
-		r--;
 	}
+	for (; r > 0; )
+		r--;
 	free(b);
 	close_file(from);
 	close_file(to);
