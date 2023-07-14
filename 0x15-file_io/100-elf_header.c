@@ -200,6 +200,24 @@ void elf_osabi(unsigned char *e_ident)
 		case ELFOSABI_NETBSD:
 			printf("UNIX - NetBSD\n");
 			break;
+		case ELFOSABI_LINUX:
+			printf("UNIX - LINUX\n");
+			break;
+		case ELFOSABI_IRIX:
+			printf("UNIX - IRIX\n");
+			break;
+		case ELFOSABI_HPUX:
+			printf("UNIX - HP-UX\n");
+			break;
+		case ELFOSABI_TRU64:
+			printf("UNIX - TRU64\n");
+			break;
+		case ELFOSABI_STANDALONE:
+			printf("Standalone App\n");
+			break;
+		case ELFOSABI_ARM:
+			printf("ARM\n");
+			break;
 		default:
 			printf("<unknown: %x>\n", e_ident[EI_OSABI]);
 	}
