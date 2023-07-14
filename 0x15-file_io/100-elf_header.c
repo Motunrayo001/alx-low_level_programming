@@ -7,7 +7,7 @@
  * @argc: number of arguments
  * @argv: arguments
  * Usage: elf_header elf_filename
- * Displayed information: (no less, no more, do not include trailing whitespace)
+ * Displayed information: no less, no more, do not include trailing whitespace
  * Magic
  * class
  * Data
@@ -25,6 +25,49 @@
  * You are allowed to use printf
  * Return: nothing
  */
+int main(int __attribute__((__unused__)) argc, char *argv[])
+{
+	Elf64_Ehdr *header;
+	int op, rd;
+
+	op = open(argv[1], O_RDONLY);
+	if (o == -1)
+	{
+		dprintf(STDERR_FILENO,
+				"Error: Can't read file %s\n", argv[1]);
+		exit(98);
+	}
+	header = malloc(sizeof(Elf64_Ehdr));
+	if (header == NULL)
+	{
+		close_elf(op);
+		dprintf(STDERR_FILENO,
+				"Error: Can't read file %s\n", argv[1]);
+		exit(98);
+	}
+	rd = read(op, header, sizeof(Elf64_Ehdr));
+	if (rd == -1)
+	{
+		free(header);
+		close_elf(op);
+		dprintf(STDERR_FILENO,
+				"Error: %s : No file like that\n", argv[1]);
+		exit(98);
+	}
+	check_elf(header->e_ident);
+	printf("ELF Header: \n");
+	magic_elf(header->e_ident);
+	elf_class(header->e_ident);
+	elf_data(header->e_ident);
+	elf_version(header->e_ident);
+	elf_osiabi(header->e_ident);
+	elf_abi(header->e_ident);
+	elf_type(header->e_type, header->e_ident);
+	elf_entry(header->e_type, header->e_ident);
+	free(header);
+	close_elf(op);
+	return (0);
+}
 
 /**
  * check_elf - first check if the file is elf
@@ -43,7 +86,8 @@ void check_elf(unsigned char *e_ident)
 				e_ident[i] != 'L' &&
 				e_ident[i] != 'F')
 		{
-			dprintf(STDERR_FILENO: "Error: It's not an ELF file\n");
+			dprintf(STDERR_FILENO,
+					"Error: It's not an ELF file\n");
 			exit(98);
 		}
 	}
@@ -87,6 +131,147 @@ void elf_class(unsigned char *e_ident)
 			printf("ELF64\n");
 			break;
 		default:
-			printf("unknown: %x>\n", e_ident[EI_CLASS]);
+			printf("<unknown: %x>\n", e_ident[EI_CLASS]);
+	}
+}
+
+/**
+ * elf_data - the data of the elf
+ * @e_ident: pointer to an array that has elf data
+ */
+void elf_data(unsigned char *e_ident)
+{
+	printf(" Data: ");
+	switch (e_ident[EI_DATA])
+	{
+		case ELFDATANONE:
+			printf("none\n");
+			break;
+		case ELFDATALITEND:
+			printf("2's complement, little endian\n");
+			break;
+		case ELFDATABIGEND:
+			printf("2's complement, big endian\n");
+			break;
+		default:
+			printf("<unknown: %x>\n", e_ident[EI_DATA]);
+	}
+}
+
+/**
+ * elf_version - the elf's version
+ * @e_ident: pointer to an array that has elf version
+ */
+void elf_version(unsigned char *e_ident)
+{
+	printf(" Version: %d",
+			e_ident[EI_VERSION]);
+	switch (e_ident[EI_VERSION])
+	{
+		case VERSIONCURRENT:
+			printf(" (current)\n");
+			break;
+		default:
+			printf("\n");
+	}
+}
+
+/**
+ * elf_osiabi - the elf osi or abi
+ * @e_ident: pointer to an array that has elf osi/abi
+ */
+void elf_osiabi(unsigned char *e_ident)
+{
+	printf(" OSI/ABI: ");
+	switch (e_ident[EI_OSIABI])
+	{
+		case ELFOSIABINONE:
+			printf("UNIX - System V\n");
+			break;
+		case ELFOSIABISOL:
+			printf("UNIX - Solaris\n");
+			break;
+		case ELFOSIABINET:
+			printf("UNIX - NetBSD\n");
+			break;
+		default:
+			printf("<unknown: %x>\n", e_ident[EI_OSIABI]);
+	}
+}
+
+/**
+ * elf_abi - the abi of an elf
+ * @e_ident: pointer of an array tha has the elf abi
+ */
+void elf_abi(unsigned char *e_ident)
+{
+	printf(" ABI Version: %d\n",
+			e_ident[EI_ABI]);
+}
+
+/**
+ * elf_type - the elf type
+ * @e_ident: pointer to an array that has elf type
+ */
+void elf_type(unsigned char *e_ident)
+{
+	if (e_ident[EI_DATA] == ELFDATA2MSB)
+		el_type >>= 8;
+
+	printf(" Type: ");
+	switch (el_type)
+	{
+		case ELFTYPENONE:
+			printf("NONE (none)\n");
+			break;
+		case ELFTYPEREL:
+			printf("REL (Relocatable file)\n");
+			break;
+		case ELFTYPEEXEC:
+			printf("EXEC (Executable file)\n");
+			break;
+		case ELFTYPEDYN:
+			printf("DYN (Shared object file)\n");
+			break;
+		case ELFTYPECORE:
+			printf("CORE (Core file)\n");
+			break;
+		default:
+			printf("<unknown: %x>\n", el_type);
+	}
+}
+
+/**
+ * elf_entry - the entry point address of elf header file
+ * @e_ident: pointer to an array that has elf entry point address
+ * @e_entry: the address of the entry header file
+ */
+void elf_entry(unsigned long int e_entry, unsigned char *e_ident)
+{
+	printf(" Entry point address: ");
+
+	if (e_ident[EI_DATA] == ELFDATA2MSB)
+	{
+		e_entry = ((e_entry << 8) & 0xFF00FF00) |
+			((e_entry >> 8) & 0xFF00FF);
+		e_entry = ((e_entry << 16) | (e_entry >> 16);
+	}
+	if (e_ident[EI_CLASS] == ELFCLASS32)
+		printf("%x\n", (unsigned int)e_entry);
+	else
+		printf("%#1x\n", e_entry);
+}
+
+/**
+ * close_elf - close the elf header file
+ * @elf: the elf file detector
+ */
+void close_elf(int elf)
+{
+	if (close(elf) == -1)
+	{
+		dprintf(STDERR_FILENO,
+				"Error: Can't close elf header fd %d\n", elf);
+		exit(98);
 	}
 }
