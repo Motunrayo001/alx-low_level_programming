@@ -1,4 +1,10 @@
-#include "main.h"
+#include <elf.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include "elfmain.h"
 
 /**
@@ -31,7 +37,7 @@ int main(int __attribute__((__unused__)) argc, char *argv[])
 	int op, rd;
 
 	op = open(argv[1], O_RDONLY);
-	if (o == -1)
+	if (op == -1)
 	{
 		dprintf(STDERR_FILENO,
 				"Error: Can't read file %s\n", argv[1]);
@@ -60,9 +66,9 @@ int main(int __attribute__((__unused__)) argc, char *argv[])
 	elf_class(header->e_ident);
 	elf_data(header->e_ident);
 	elf_version(header->e_ident);
-	elf_osiabi(header->e_ident);
+	elf_osabi(header->e_ident);
 	elf_abi(header->e_ident);
-	elf_type(header->e_type, header->e_ident);
+	print_type(header->e_type, header->e_ident);
 	elf_entry(header->e_type, header->e_ident);
 	free(header);
 	close_elf(op);
@@ -106,9 +112,9 @@ void magic_elf(unsigned char *e_ident)
 	{
 		printf("%02x", e_ident[i]);
 		if (i != EI_NIDENT - 1)
-			printf(" ")
+			printf(" ");
 		else
-			printf("\n")
+			printf("\n");
 	}
 }
 
@@ -147,10 +153,10 @@ void elf_data(unsigned char *e_ident)
 		case ELFDATANONE:
 			printf("none\n");
 			break;
-		case ELFDATALITEND:
+		case ELFDATA2LSB:
 			printf("2's complement, little endian\n");
 			break;
-		case ELFDATABIGEND:
+		case ELFDATA2MSB:
 			printf("2's complement, big endian\n");
 			break;
 		default:
@@ -168,7 +174,7 @@ void elf_version(unsigned char *e_ident)
 			e_ident[EI_VERSION]);
 	switch (e_ident[EI_VERSION])
 	{
-		case VERSIONCURRENT:
+		case EV_CURRENT:
 			printf(" (current)\n");
 			break;
 		default:
@@ -177,25 +183,25 @@ void elf_version(unsigned char *e_ident)
 }
 
 /**
- * elf_osiabi - the elf osi or abi
+ * elf_osabi - the elf osi or abi
  * @e_ident: pointer to an array that has elf osi/abi
  */
-void elf_osiabi(unsigned char *e_ident)
+void elf_osabi(unsigned char *e_ident)
 {
 	printf(" OSI/ABI: ");
-	switch (e_ident[EI_OSIABI])
+	switch (e_ident[EI_OSABI])
 	{
-		case ELFOSIABINONE:
+		case ELFOSABI_NONE:
 			printf("UNIX - System V\n");
 			break;
-		case ELFOSIABISOL:
+		case ELFOSABI_SOLARIS:
 			printf("UNIX - Solaris\n");
 			break;
-		case ELFOSIABINET:
+		case ELFOSABI_NETBSD:
 			printf("UNIX - NetBSD\n");
 			break;
 		default:
-			printf("<unknown: %x>\n", e_ident[EI_OSIABI]);
+			printf("<unknown: %x>\n", e_ident[EI_OSABI]);
 	}
 }
 
@@ -206,38 +212,39 @@ void elf_osiabi(unsigned char *e_ident)
 void elf_abi(unsigned char *e_ident)
 {
 	printf(" ABI Version: %d\n",
-			e_ident[EI_ABI]);
+			e_ident[EI_ABIVERSION]);
 }
 
 /**
- * elf_type - the elf type
+ * print_type - print the elf type
  * @e_ident: pointer to an array that has elf type
+ * @e_type: the elf type
  */
-void elf_type(unsigned char *e_ident)
+void print_type(unsigned int e_type, unsigned char *e_ident)
 {
 	if (e_ident[EI_DATA] == ELFDATA2MSB)
-		el_type >>= 8;
+		e_type >>= 8;
 
 	printf(" Type: ");
-	switch (el_type)
+	switch (e_type)
 	{
-		case ELFTYPENONE:
+		case ET_NONE:
 			printf("NONE (none)\n");
 			break;
-		case ELFTYPEREL:
+		case ET_REL:
 			printf("REL (Relocatable file)\n");
 			break;
-		case ELFTYPEEXEC:
+		case ET_EXEC:
 			printf("EXEC (Executable file)\n");
 			break;
-		case ELFTYPEDYN:
+		case ET_DYN:
 			printf("DYN (Shared object file)\n");
 			break;
-		case ELFTYPECORE:
+		case ET_CORE:
 			printf("CORE (Core file)\n");
 			break;
 		default:
-			printf("<unknown: %x>\n", el_type);
+			printf("<unknown: %x>\n", e_type);
 	}
 }
 
@@ -254,12 +261,12 @@ void elf_entry(unsigned long int e_entry, unsigned char *e_ident)
 	{
 		e_entry = ((e_entry << 8) & 0xFF00FF00) |
 			((e_entry >> 8) & 0xFF00FF);
-		e_entry = ((e_entry << 16) | (e_entry >> 16);
+		e_entry = ((e_entry << 16) | (e_entry >> 16));
 	}
 	if (e_ident[EI_CLASS] == ELFCLASS32)
-		printf("%x\n", (unsigned int)e_entry);
+		printf("%#x\n", (unsigned int)e_entry);
 	else
-		printf("%#1x\n", e_entry);
+		printf("%#lx\n", e_entry);
 }
 
 /**
