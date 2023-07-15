@@ -69,7 +69,7 @@ int main(int __attribute__((__unused__)) argc, char *argv[])
 	elf_osabi(header->e_ident);
 	elf_abi(header->e_ident);
 	print_type(header->e_type, header->e_ident);
-	elf_entry(header->e_type, header->e_ident);
+	elf_entry(header->e_entry, header->e_ident);
 	free(header);
 	close_elf(op);
 	return (0);
@@ -179,6 +179,7 @@ void elf_version(unsigned char *e_ident)
 			break;
 		default:
 			printf("\n");
+			break;
 	}
 }
 
@@ -284,7 +285,7 @@ void elf_entry(unsigned long int e_entry, unsigned char *e_ident)
 	if (e_ident[EI_CLASS] == ELFCLASS32)
 		printf("%#x\n", (unsigned int)e_entry);
 	else
-		printf("%#lx\n", e_entry);
+		printf("%#1lx\n", e_entry);
 }
 
 /**
